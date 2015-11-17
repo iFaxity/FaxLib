@@ -100,6 +100,10 @@
       <Project>{685d461b-a2fc-4340-887d-9ea922f53982}</Project>
       <Name>FaxLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\FaxUI\FaxUI.csproj">
+      <Project>{cfc4bdad-d0ff-4efa-83db-7396d636d8d9}</Project>
+      <Name>FaxUI</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="BtnNormal.png" />
