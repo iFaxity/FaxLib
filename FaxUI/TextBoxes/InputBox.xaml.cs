@@ -135,7 +135,7 @@ namespace FaxUI {
             get { return (char)GetValue(PassCharProperty); }
             set { SetValue(IsReadOnlyProperty, value); }
         }
-        public static readonly DependencyProperty PassCharProperty = DependencyProperty.Register("IsReadOnly", typeof(char), typeof(InputBox), new PropertyMetadata('●', new PropertyChangedCallback(PassCharProperty_Changed)));
+        public static readonly DependencyProperty PassCharProperty = DependencyProperty.Register("PassChar", typeof(char), typeof(InputBox), new PropertyMetadata('●', new PropertyChangedCallback(PassCharProperty_Changed)));
         static void PassCharProperty_Changed(DependencyObject obj, DependencyPropertyChangedEventArgs e) {
             var sender = (InputBox)obj;
             if(sender != null) {

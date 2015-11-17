@@ -79,10 +79,7 @@ namespace FaxUI {
             };
             Style = (Style)FindResource("WindowStyle");
 
-            //Loaded += (sender, e) => LoadAssemblies(AssemblyPath);
-
-            var str = string.Format("Vs: {0} x {1}", SystemParameters.VirtualScreenWidth, SystemParameters.VirtualScreenHeight);
-            MessageBox.Show(str);
+            // Loaded += (sender, e) => LoadAssemblies(AssemblyPath);
         }
 
         #region Interop
