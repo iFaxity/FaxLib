@@ -1,0 +1,23 @@
+﻿<fax:UIWindow x:Class="WPFTester.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:fax="http://schemas.faxlib.com/wpf"
+        Title="MainWindow" Height="350" Width="525" BorderThickness="4" BorderBrush="Transparent" Foreground="Black" DetailBrush="Green" AssemblyPath="dll">
+    <Grid>
+        <fax:Pbar x:Name="Pbar" Value="100" HorizontalAlignment="Left" Margin="10,267,0,0" VerticalAlignment="Top" Width="409" Background="#FF204D6D"/>
+        <fax:NumericBox x:Name="numBoxPbar" HorizontalAlignment="Left" Margin="424,264,0,0" VerticalAlignment="Top" />
+        
+        <fax:NumericBox x:Name="numBox" HorizontalAlignment="Left" Margin="434,104,0,0" VerticalAlignment="Top" />
+        <!--<fax:UIToggleButton HorizontalAlignment="Left" Margin="360,71,0,0" VerticalAlignment="Top" Content="Button" IsToggled="True" HoverForeground="{x:Null}" ToggledBackground="#FF252525" ToggledBorderBrush="#FF204D6D" ToggledForeground="#FFC8C8C8" HoverBorderBrush="{x:Null}" HoverBackground="{x:Null}" Background="#FF252525" BorderBrush="#FF0097FB"/>-->
+        <Button Content="Next" HorizontalAlignment="Left" Margin="203,104,0,0" VerticalAlignment="Top" Width="91" Click="Button_Click"/>
+
+        <TextBlock x:Name="icoName" Margin="203,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Text="IcoName:" FontSize="20"></TextBlock>
+        <fax:IcoMoon Spin="True" x:Name="icoMoon" Width="100" Height="100" Icon="Spinner" Margin="409,0,0,0"/>
+
+        <fax:UISlider x:Name="sliderHori" Value="5" Width="150" Margin="10,10,0,0" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" Height="20" Background="#FF204D6D"/>
+        <fax:UISlider x:Name="sliderVert" Value="50" Width="20" Height="150" Margin="10,104,0,0" Orientation="Vertical" Background="#FF204D6D"/>
+        <TextBlock x:Name="txbVal" Margin="35,124,275,158" FontSize="20">NaN</TextBlock>
+        <fax:InputBox PlaceHolder="Lel" Width="100" Margin="259,140,0,0"></fax:InputBox>
+        <TextBox x:Name="cap" IsReadOnly="True" HorizontalAlignment="Left" Height="23" Margin="264,173,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+    </Grid>
+</fax:UIWindow>

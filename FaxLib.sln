@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FaxLib", "FaxLib\FaxLib.csproj", "{685D461B-A2FC-4340-887D-9EA922F53982}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFTester", "WPFTester\WPFTester.csproj", "{47681626-0632-418C-8150-C488C8BF6F28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console", "Console\Console.csproj", "{39949657-2B8C-4571-98C4-DF35FE9F57C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FaxUI", "FaxUI\FaxUI.csproj", "{CFC4BDAD-D0FF-4EFA-83DB-7396D636D8D9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{685D461B-A2FC-4340-887D-9EA922F53982}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{685D461B-A2FC-4340-887D-9EA922F53982}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{685D461B-A2FC-4340-887D-9EA922F53982}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{685D461B-A2FC-4340-887D-9EA922F53982}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47681626-0632-418C-8150-C488C8BF6F28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47681626-0632-418C-8150-C488C8BF6F28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47681626-0632-418C-8150-C488C8BF6F28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47681626-0632-418C-8150-C488C8BF6F28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39949657-2B8C-4571-98C4-DF35FE9F57C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39949657-2B8C-4571-98C4-DF35FE9F57C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39949657-2B8C-4571-98C4-DF35FE9F57C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39949657-2B8C-4571-98C4-DF35FE9F57C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFC4BDAD-D0FF-4EFA-83DB-7396D636D8D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFC4BDAD-D0FF-4EFA-83DB-7396D636D8D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFC4BDAD-D0FF-4EFA-83DB-7396D636D8D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFC4BDAD-D0FF-4EFA-83DB-7396D636D8D9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

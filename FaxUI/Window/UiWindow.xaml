@@ -1,0 +1,160 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:fax="clr-namespace:FaxUI">
+
+    <Style TargetType="{x:Type fax:UIWindow}" x:Key="WindowStyle">
+        <Style.Resources>
+            <fax:MaximizeVisibilityConverter x:Key="MaximizeVisibilityConverter"/>
+            <fax:MinimizeVisibilityConverter x:Key="MinimizeVisibilityConverter"/>
+            <!-- Default Button Images -->
+            <Image x:Key="RestoreImage" Stretch="Uniform" Source="/FaxUI;component/Resources/Restore.png"></Image>
+            <Image x:Key="MinimizeImage" Stretch="Uniform" Source="/FaxUI;component/Resources/Minimize.png"></Image>
+            <Image x:Key="MaximizeImage" Stretch="Uniform" Source="/FaxUI;component/Resources/Maximize.png"></Image>
+            <!-- Default Brushes -->
+            <SolidColorBrush x:Key="ButtonBackground" Color="#2D2D30"></SolidColorBrush>
+            <SolidColorBrush x:Key="ButtonForeground" Color="#F1F1F1"></SolidColorBrush>
+            <SolidColorBrush x:Key="ButtonBorderBrush" Color="#2D2D30"></SolidColorBrush>
+        </Style.Resources>
+
+        <!-- Window Default Properties START -->
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="AllowsTransparency" Value="True"/>
+        <Setter Property="MinWidth" Value="300"/>
+        <Setter Property="MinHeight" Value="300"/>
+        <Setter Property="WindowStyle" Value="None"/>
+        <Setter Property="BorderBrush" Value="Black"/>
+        <Setter Property="Foreground" Value="#FFC8C8C8"/>
+        <!-- Window Default Properties END -->
+
+        <!-- Window Content START -->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type fax:UIWindow}" x:Name="WindowTemplate">
+                    <Grid x:Name="WindowFrame">
+
+                        <!-- Resize Borders START -->
+                        <Border Background="{TemplateBinding BorderBrush}" x:Name="WindowBorderLeft"  VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="{Binding BorderThickness.Left, RelativeSource={RelativeSource TemplatedParent}}" Panel.ZIndex="-2"/>
+                        <Border Background="{TemplateBinding BorderBrush}" x:Name="WindowBorderTop" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="{Binding BorderThickness.Top, RelativeSource={RelativeSource TemplatedParent}}" Width="Auto" Panel.ZIndex="-2"/>
+                        <Border Background="{TemplateBinding BorderBrush}" x:Name="WindowBorderRight" VerticalAlignment="Stretch" HorizontalAlignment="Right" Width="{Binding BorderThickness.Right, RelativeSource={RelativeSource TemplatedParent}}" Height="Auto" Panel.ZIndex="-2"/>
+                        <Border Background="{TemplateBinding BorderBrush}" x:Name="WindowBorderBottom" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Height="{Binding BorderThickness.Bottom, RelativeSource={RelativeSource TemplatedParent}}" Width="Auto" Panel.ZIndex="-2"/>
+                        <!-- Resize Borders END -->
+
+                        <!-- Resize Corners START -->
+                        <Border Background="{TemplateBinding BorderBrush}" x:Name="WindowBorderTopLeft" VerticalAlignment="Top" HorizontalAlignment="Left" Width="{Binding BorderThickness.Left, RelativeSource={RelativeSource TemplatedParent}}" Height="{Binding BorderThickness.Top, RelativeSource={RelativeSource TemplatedParent}}" Panel.ZIndex="-1"/>
+                        <Border Background="{TemplateBinding BorderBrush}" x:Name="WindowBorderTopRight" VerticalAlignment="Top" HorizontalAlignment="Right" Width="{Binding BorderThickness.Right, RelativeSource={RelativeSource TemplatedParent}}" Height="{Binding BorderThickness.Top, RelativeSource={RelativeSource TemplatedParent}}" Panel.ZIndex="-1"/>
+                        <Border Background="{TemplateBinding BorderBrush}" x:Name="WindowBorderBottomRight" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="{Binding BorderThickness.Left, RelativeSource={RelativeSource TemplatedParent}}" Height="{Binding BorderThickness.Bottom, RelativeSource={RelativeSource TemplatedParent}}" Panel.ZIndex="-1"/>
+                        <Border Background="{TemplateBinding BorderBrush}" x:Name="WindowBorderBottomLeft" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="{Binding BorderThickness.Right, RelativeSource={RelativeSource TemplatedParent}}" Height="{Binding BorderThickness.Bottom, RelativeSource={RelativeSource TemplatedParent}}" Panel.ZIndex="-1"/>
+                        <!-- Resize Corners END -->
+
+                        <!-- Inner Border START -->
+                        <Border x:Name="WindowInnerBorder" Background="{Binding InnerBackground, RelativeSource={RelativeSource TemplatedParent}}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Panel.ZIndex="-3">
+
+                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                <!-- Top Bar START -->
+                                <DockPanel x:Name="WindowTopPanel" LastChildFill="True" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="10,0">
+                                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Button x:Name="WindowMinimizeButton" Content="{StaticResource MinimizeImage}" Style="{DynamicResource WindowButton}" Margin="0,0,5,0" Width="34"/>
+                                        <Button x:Name="WindowMaximizeButton" Content="{StaticResource MaximizeImage}" Style="{DynamicResource WindowButton}" Margin="0,0,5,0" Width="34"/>
+                                        <Button x:Name="WindowCloseButton" Content="X" Margin="0,0,0,0" Style="{DynamicResource WindowButton}" Width="34"/>
+                                    </StackPanel>
+                                    <TextBlock x:Name="WindowTitle" DockPanel.Dock="Left" Padding="0" VerticalAlignment="Center" FontSize="14">  
+                                        <Image x:Name="WindowIcon" Width="16" Height="16"  Margin="10,0,10,0" Source="{TemplateBinding Icon}" SnapsToDevicePixels="True" RenderOptions.EdgeMode="Aliased"/>
+                                        <Run Text="{TemplateBinding Title}" Foreground="{Binding WindowForeground, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                    </TextBlock>
+                                </DockPanel>
+                                <!-- Top Bar END -->
+                                <TextBlock x:Name="WindowStatus" Text="Status: " HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,5" FontSize="12" Visibility="Visible" Foreground="{Binding WindowForeground, RelativeSource={RelativeSource TemplatedParent}}"></TextBlock>
+                            </Grid>
+                        </Border>
+
+                        <!-- Inner Border END -->
+
+                        <DockPanel x:Name="WindowContent" Background="{TemplateBinding Background}" Margin="10,26,10,25">
+                            <ContentPresenter/>
+                        </DockPanel>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger SourceName="WindowIcon" Property="Source" Value="{x:Null}">
+                            <Setter TargetName="WindowIcon" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="WindowTitle" Property="Margin" Value="0"/>
+                        </Trigger>
+                        <Trigger Property="WindowState" Value="Maximized"></Trigger>
+                        <Trigger Property="WindowState" Value="Minimized"></Trigger>
+                        <Trigger Property="WindowState" Value="Normal"></Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <!-- Window Content END-->
+
+
+    </Style>
+    <!-- Button For Window -->
+    <Style TargetType="Button" x:Key="WindowButton">
+        <Setter Property="Background" Value="#2D2D30" />
+        <Setter Property="Foreground" Value="#F1F1F1" />
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{x:Null}" BorderThickness="{TemplateBinding BorderThickness}">
+                        <ContentPresenter x:Name="MyContentPresenter" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0"/>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#3F3F41" />
+                            <Setter Property="Foreground" Value="White" />
+                            <Setter Property="BorderBrush" Value="#3F3F41" />
+                        </Trigger>
+
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="#007ACC" />
+                            <Setter Property="Foreground" Value="White" />
+                            <Setter Property="BorderBrush" Value="#007ACC" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style TargetType="{x:Type Button}" x:Key="UIButtonStyle">
+        <Setter Property="Background" Value="#2D2D30" />
+        <Setter Property="Foreground" Value="#F1F1F1" />
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="BorderBrush" Value="#9C9C9C" />
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border>
+                        <Grid>
+                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"></Border>
+                            <ContentPresenter x:Name="MyContentPresenter" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0"/>
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{Binding DetailBrush, RelativeSource={RelativeSource TemplatedParent}}" />
+                            <Setter Property="BorderBrush" Value="#007ACC" />
+                        </Trigger>
+
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="#007ACC" />
+                            <Setter Property="BorderBrush" Value="#007ACC" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

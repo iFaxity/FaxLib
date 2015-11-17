@@ -1,0 +1,14 @@
+﻿<UserControl x:Class="FaxUI.NumericBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="34" d:DesignWidth="75" MaxHeight="34" MinHeight="34" MinWidth="75" MaxWidth="100" PreviewKeyDown="_KeyDown">
+    <Grid Background="White">
+        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="32" Width="45" TextWrapping="NoWrap" Text="0" VerticalAlignment="Top" MinHeight="32" VerticalContentAlignment="Center" BorderThickness="0" BorderBrush="{x:Null}" HorizontalContentAlignment="Left" Margin="1"  Panel.ZIndex="2" PreviewTextInput="_TextInput"/>
+        <Border BorderBrush="#FFE3E9EF" BorderThickness="1" HorizontalAlignment="Left" Height="34" VerticalAlignment="Top" Width="75" Panel.ZIndex="1"/>
+        <Button x:Name="arrowUp" Content="˄" HorizontalAlignment="Left" Margin="49,1,0,0" VerticalAlignment="Top" Width="24" Height="16" Panel.ZIndex="1" Click="Up"/>
+        <Button x:Name="arrowDown" Content="˅" HorizontalAlignment="Left" Margin="49,17,0,0" VerticalAlignment="Top" Width="24" Height="16" Panel.ZIndex="1" Click="Down"/>
+    </Grid>
+</UserControl>
