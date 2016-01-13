@@ -29,25 +29,25 @@ namespace FaxLib.Net {
             new Random().NextBytes(data);
             var pingers = Pingers(256);
 
-            for(int i = 0; i < pingers.Count; i++) {
+            for (int i = 0; i < pingers.Count; i++) {
                 lock (_lock)
                     _instances++;
                 pingers[i].SendAsync(baseIP + i, timeOut, data, op);
             }
 
-            while(_instances > 0) { }
+            while (_instances > 0) { }
 
             pingers.Clear();
             return _foundIP;
         }
         private static List<Ping> Pingers(int count) {
             var list = new List<Ping>();
-            for(int i = 2; i < count; i++) {
+            for (int i = 2; i < count; i++) {
                 var p = new Ping();
                 p.PingCompleted += delegate (object o, PingCompletedEventArgs e) {
                     lock (_lock)
                         _instances--;
-                    if(e.Reply.Status == IPStatus.Success)
+                    if (e.Reply.Status == IPStatus.Success)
                         _foundIP.Add(e.Reply.Address.ToString());
                 };
                 list.Add(p);
@@ -80,6 +80,20 @@ namespace FaxLib.Net {
         public static PingReply GetPing(string host, TimeSpan timeout, int packetSize) {
             return new Ping().Send(host, timeout.Milliseconds, new byte[packetSize]);
         }
+
+        public static List<string> PortScan() {
+            var client = new TcpClient("", 0);
+            return null;
+        }
+
+        public static string GetLocalIPAddress() {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList) {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                    return ip.ToString();
+            }
+            return null;
+        }
     }
 
     /// <summary>
@@ -95,7 +109,7 @@ namespace FaxLib.Net {
     /// <summary>
     /// Class for storing client info for <see cref="NetHost"/>
     /// </summary>
-    [DebuggerStepThrough]
+    //[DebuggerStepThrough]
     public class NetClient {
         #region Properties
         public string IP { get; private set; }
@@ -106,21 +120,21 @@ namespace FaxLib.Net {
 
         #region Events
         // Message Received Event
-        public event EventHandler<EventArgs> Connecting;
+        internal event EventHandler<EventArgs> Connecting;
         protected virtual void OnConnecting() {
-            if(Connecting != null)
+            if (Connecting != null)
                 Connecting(this, new EventArgs());
         }
         // Message Received Event
-        public event EventHandler<NetMessageEvent> MessageReceived;
+        internal event EventHandler<NetMessageEvent> MessageReceived;
         protected virtual void OnMessageReceived(NetMessageEvent e) {
-            if(MessageReceived != null)
+            if (MessageReceived != null)
                 MessageReceived(this, e);
         }
         // Disconnect Event
-        public event EventHandler<EventArgs> Disconnecting;
+        internal event EventHandler<EventArgs> Disconnecting;
         protected virtual void OnDisconnecting() {
-            if(Disconnecting != null)
+            if (Disconnecting != null)
                 Disconnecting(this, new EventArgs());
         }
         #endregion
@@ -138,38 +152,34 @@ namespace FaxLib.Net {
             Task.Factory.StartNew(Listen);
         }
 
-        internal bool SendMessage(string message) {
-            try {
+        internal void SendMessage(string message) {
+            if (Client.Connected) {
                 var stream = Client.GetStream();
                 var buffer = Encoding.UTF8.GetBytes(message);
                 stream.Write(buffer, 0, buffer.Length);
-                stream.Flush();
-                return true;
             }
-            catch { return false; }
         }
         void Listen() {
-            using(var stream = Client.GetStream()) {
-                byte[] buffer;
-                int bufferLength;
+            // Start listener
+            byte[] buffer;
+            int bufferLength;
+            var stream = Client.GetStream();
 
-                while(true) {
-                    try {
-                        buffer = new byte[Client.ReceiveBufferSize];
-                        bufferLength = stream.Read(buffer, 0, buffer.Length);
+            while (Client.Connected) {
+                // Prevent the listener from crashing
+                try {
+                    buffer = new byte[Client.ReceiveBufferSize];
+                    bufferLength = stream.Read(buffer, 0, Client.ReceiveBufferSize);
 
-                        // Message has successfully been received
-                        if(bufferLength > 0) {
-                            var msg = Encoding.UTF8.GetString(buffer, 0, bufferLength);
-                            OnMessageReceived(new NetMessageEvent(msg));
-                        }
-                    }
-                    catch { break; }
+                    // Message has successfully been received
+                    if (bufferLength > 0)
+                        OnMessageReceived(new NetMessageEvent(Encoding.UTF8.GetString(buffer, 0, bufferLength)));
                 }
-
-                OnDisconnecting();
-                Client.Close();
+                catch { break; }
             }
+
+            OnDisconnecting();
+            Client.Close();
         }
     }
 
@@ -180,7 +190,7 @@ namespace FaxLib.Net {
     public class NetHost {
         #region Properties & Fields
         TcpListener _tcpListener;
-        public List<NetClient> Clients { get; set;}
+        public List<NetClient> Clients { get; set; }
         public bool Listening { get; set; }
         #endregion
 
@@ -188,35 +198,51 @@ namespace FaxLib.Net {
         // Message Received Event
         public event EventHandler<NetMessageEvent> MessageReceived;
         protected virtual void OnMessageReceived(object sender, NetMessageEvent e) {
-            if(MessageReceived != null)
+            if (MessageReceived != null)
                 MessageReceived(sender, e);
         }
         // Client Connecting Event
         public event EventHandler<EventArgs> ClientConnecting;
         protected virtual void OnClientConnecting(object sender) {
-            if(ClientConnecting != null)
+            if (ClientConnecting != null)
                 ClientConnecting(sender, EventArgs.Empty);
         }
         // Client Disconnecting Event
         public event EventHandler<EventArgs> ClientDisconnecting;
         protected virtual void OnClientDisconnecting(object sender) {
-            if(ClientDisconnecting != null)
+            if (ClientDisconnecting != null)
                 ClientDisconnecting(sender, EventArgs.Empty);
         }
         #endregion
 
+        /// <summary>
+        /// Starts a Tcp host for <see cref="NetNode"/>'s
+        /// </summary>
+        /// <param name="port">TCP port to bind to</param>
         public NetHost(int port) {
-            Clients = new List<NetClient>();
-            _tcpListener = new TcpListener(IPAddress.Any, port);
-            _tcpListener.Start();
+            Init(IPAddress.Any, port);
+        }
+        /// <summary>
+        /// Starts a Tcp host for <see cref="NetNode"/>'s
+        /// </summary>
+        /// <param name="port">TCP port to bind to</param>
+        /// <param name="ipAddr">IP address to bind server to</param>
+        public NetHost(int port, IPAddress ipAddr) {
+            Init(ipAddr, port);
+        }
 
+        void Init(IPAddress ipAddr, int port) {
+            Clients = new List<NetClient>();
+            _tcpListener = new TcpListener(ipAddr, port);
+            _tcpListener.Start();
+            // Start thread listener
             Task.Factory.StartNew(Listen);
         }
 
         void Listen() {
             Listening = true;
-            while(Listening) {
-                if(_tcpListener.Pending()) {
+            while (Listening) {
+                if (_tcpListener.Pending()) {
                     var client = new NetClient(_tcpListener.AcceptTcpClient());
                     OnClientConnecting(client);
 
@@ -230,16 +256,16 @@ namespace FaxLib.Net {
         }
         void Disconnecting(object sender, EventArgs e) {
             // Remove the disconnected client
-            Clients.Remove((NetClient)sender);
             OnClientDisconnecting(sender);
+            Clients.Remove((NetClient)sender);
         }
 
         /// <summary>
-        /// Gets all connected clients names
+        /// Gets all connected clients
         /// </summary>
-        public List<string> ConnectedNames {
+        public List<NetClient> ConnectedClients {
             get {
-                return Clients.Select(x => x.Name).ToList();
+                return Clients.Select(x => x).ToList();
             }
         }
         /// <summary>
@@ -247,7 +273,7 @@ namespace FaxLib.Net {
         /// </summary>
         /// <param name="message"></param>
         public void Broadcast(string message) {
-            foreach(var client in Clients)
+            foreach (var client in Clients)
                 client.SendMessage(message);
         }
         /// <summary>
@@ -256,9 +282,11 @@ namespace FaxLib.Net {
         /// <param name="clientID"></param>
         /// <param name="message"></param>
         public bool SendMessage(string clientName, string message) {
-            foreach(var client in Clients) {
-                if(client.Name == clientName)
-                    return client.SendMessage(message);
+            foreach (var client in Clients) {
+                if (client.Name == clientName) {
+                    client.SendMessage(message);
+                    return true;
+                }
             }
             return false;
         }
@@ -282,7 +310,7 @@ namespace FaxLib.Net {
     /// <summary>
     /// Class to connect to a <see cref="NetHost"/>
     /// </summary>
-    [DebuggerStepThrough]
+    //[DebuggerStepThrough]
     public class NetNode {
         #region Properties
         /// <summary>
@@ -307,14 +335,14 @@ namespace FaxLib.Net {
         // Message Received Event
         public event EventHandler<NetMessageEvent> MessageReceived;
         protected virtual void OnMessageReceived(NetMessageEvent e) {
-            if(MessageReceived != null)
+            if (MessageReceived != null)
                 MessageReceived(this, e);
         }
 
         // Disconnect Event
         public event EventHandler<EventArgs> Disconnecting;
         protected virtual void OnDisconnecting() {
-            if(Disconnecting != null)
+            if (Disconnecting != null)
                 Disconnecting(this, EventArgs.Empty);
         }
         #endregion
@@ -328,39 +356,37 @@ namespace FaxLib.Net {
 
         void Listen() {
             // Start listener
-            using(var stream = Client.GetStream()) {
-                byte[] message;
-                int buffer;
+            byte[] buffer;
+            int bufferLength;
+            var stream = Client.GetStream();
 
-                while(true) {
-                    // Prevent the listener from crashing
-                    try {
-                        message = new byte[Client.ReceiveBufferSize];
-                        buffer = stream.Read(message, 0, Client.ReceiveBufferSize);
+            while (Client.Connected) {
+                // Prevent the listener from crashing
+                try {
+                    buffer = new byte[Client.ReceiveBufferSize];
+                    bufferLength = stream.Read(buffer, 0, Client.ReceiveBufferSize);
 
-                        // Message has successfully been received
-                        if(buffer > 0) {
-                            var _msg = Encoding.UTF8.GetString(message, 0, buffer);
-                            OnMessageReceived(new NetMessageEvent(_msg));
-                        }
-                    }
-                    catch { break; }
+                    // Message has successfully been received
+                    if (bufferLength > 0)
+                        OnMessageReceived(new NetMessageEvent(Encoding.UTF8.GetString(buffer, 0, bufferLength)));
                 }
-                Client.Close();
-                OnDisconnecting();
+                catch { break; }
             }
+
+            OnDisconnecting();
+            Client.Close();
         }
 
         /// <summary>
         /// Attempt to connect to a host
         /// </summary>
-        /// <param name="ip">Host IP to connect to</param>
+        /// <param name="hostname">Hostname or IPAddress to connect to</param>
         /// <param name="port">Host port to connect to</param>
-        public bool Connect(string ip, int port) {
-            for(int i = 0; i < Attempts; i++) {
+        public bool Connect(string hostname, int port) {
+            for (int i = 0; i < Attempts; i++) {
                 try {
                     Client = new TcpClient();
-                    Client.Connect(ip, port);
+                    Client.Connect(hostname, port);
                     Task.Factory.StartNew(Listen);
                     return Client.Connected;
                 }
@@ -372,7 +398,7 @@ namespace FaxLib.Net {
         /// Attempt to disconnect from the connected host
         /// </summary>
         public bool Disconnect() {
-            if(Client.Connected)
+            if (Client.Connected)
                 Client.Close();
             return !Client.Connected;
         }
@@ -381,12 +407,10 @@ namespace FaxLib.Net {
         /// </summary>
         /// <param name="message">Message to send</param>
         public void SendMessage(string message) {
-            if(Client.Connected) {
-                using(var stream = Client.GetStream()) {
-                    var buffer = Encoding.UTF8.GetBytes(message);
-                    stream.Write(buffer, 0, buffer.Length);
-                    stream.Flush();
-                }
+            if (Client.Connected) {
+                var stream = Client.GetStream();
+                var buffer = Encoding.UTF8.GetBytes(message);
+                stream.Write(buffer, 0, buffer.Length);
             }
         }
     }
@@ -529,7 +553,7 @@ namespace FaxLib.Net {
         public long MaxBps {
             get { return _maxBps; }
             set {
-                if(_maxBps != value) {
+                if (_maxBps != value) {
                     _maxBps = value;
                     Reset();
                 }
@@ -546,7 +570,7 @@ namespace FaxLib.Net {
         /// <exception cref="ArgumentNullException">Thrown when <see cref="baseStream"/> is a null reference.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when <see cref="maximumBytesPerSecond"/> is a negative value.</exception>
         public Throttle(string url, long max = 0, string filePath = null) {
-            if(filePath != null) {
+            if (filePath != null) {
                 _file = filePath + ".tmp";
                 _fs = File.Create(_file);
             }
@@ -568,12 +592,12 @@ namespace FaxLib.Net {
         }
 
         public void Dispose() {
-            if(_fs != null) {
+            if (_fs != null) {
                 _fs.Dispose();
-                if(File.Exists(_file))
+                if (File.Exists(_file))
                     File.Delete(_file);
             }
-            else if(_ms != null)
+            else if (_ms != null)
                 _ms.Dispose();
         }
         #endregion
@@ -584,7 +608,7 @@ namespace FaxLib.Net {
             var req = WebRequest.CreateHttp(_url);
             var res = req.GetResponse();
             var resStream = res.GetResponseStream();
-            while(true) {
+            while (true) {
                 //Throttler();
             }
         }
@@ -595,22 +619,22 @@ namespace FaxLib.Net {
         /// <param name="bufferSizeInBytes">The buffer size in bytes.</param>
         protected async void Throttler(int bufferSize) {
             // Make sure the buffer isn't empty.
-            if(_maxBps <= 0 || bufferSize <= 0)
+            if (_maxBps <= 0 || bufferSize <= 0)
                 return;
 
             _byteCount += bufferSize;
             long elapsed = Environment.TickCount - _start;
 
-            if(elapsed > 0) {
+            if (elapsed > 0) {
                 long bps = _byteCount * 1000L / elapsed;
 
                 // If the bps are more then the maximum bps, try to throttle.
-                if(bps > _maxBps) {
+                if (bps > _maxBps) {
                     // Calculate the time to sleep.
                     long wakeElapsed = _byteCount * 1000L / _maxBps;
                     int toSleep = (int)(wakeElapsed - elapsed);
 
-                    if(toSleep > 1) {
+                    if (toSleep > 1) {
                         await Task.Delay(toSleep);
                         // Reset after sleep
                         Reset();
@@ -624,7 +648,7 @@ namespace FaxLib.Net {
         /// </summary>
         protected void Reset() {
             // Only reset counters when a known history is available of more then 1 second.
-            if(Environment.TickCount - _start > 1000) {
+            if (Environment.TickCount - _start > 1000) {
                 _byteCount = 0;
                 _start = Environment.TickCount;
             }

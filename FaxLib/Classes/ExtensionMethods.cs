@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace FaxLib {
     /// <summary>
-    /// Contains most basic functions from my library.
+    /// Contains some extensions that i think the .Net Framework is missing
     /// </summary>
     [System.Diagnostics.DebuggerStepThrough]
     public static class ExtensionMethods {
@@ -17,7 +17,6 @@ namespace FaxLib {
         public static string[] Split(this string input, string splitter) {
             return input.Split(splitter.ToArray(), StringSplitOptions.None);
         }
-
         /// <summary>
         /// Gets all indexes occurrences in a string 
         /// </summary>

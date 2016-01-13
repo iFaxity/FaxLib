@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FaxLib", "FaxLib\FaxLib.csproj", "{685D461B-A2FC-4340-887D-9EA922F53982}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console", "Console\Console.csproj", "{39949657-2B8C-4571-98C4-DF35FE9F57C8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FaxUI", "FaxUI\FaxUI.csproj", "{CFC4BDAD-D0FF-4EFA-83DB-7396D636D8D9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FaxLibWPF", "FaxLibWPF\FaxLibWPF.csproj", "{5B646A3D-674D-44D6-9649-088A648DD3DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{CFC4BDAD-D0FF-4EFA-83DB-7396D636D8D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFC4BDAD-D0FF-4EFA-83DB-7396D636D8D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFC4BDAD-D0FF-4EFA-83DB-7396D636D8D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B646A3D-674D-44D6-9649-088A648DD3DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B646A3D-674D-44D6-9649-088A648DD3DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B646A3D-674D-44D6-9649-088A648DD3DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B646A3D-674D-44D6-9649-088A648DD3DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

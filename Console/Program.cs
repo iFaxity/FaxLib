@@ -1,45 +1,110 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Collections;
-using System.Text;
-using System.Configuration;
-using System.Xml;
-
-using FaxLib.Web;
 using FaxLib.Net;
-using FaxLib;
-using System.Windows.Forms;
-using System.IO;
-using System.Net;
 using System.Threading;
+using System.IO;
 
 namespace Consoler {
-    class Program {
-        /* Send PHP Get
-        static void Main(string[] args)
-        {
-            Console.BufferWidth = 500;
+    static class ConsoleLog {
+        static StreamWriter logOutput;
+        static FileStream fileOutput;
 
-            //Login checker
-            Console.Write("Write your username or email: ");
-            var user = Console.ReadLine();
-            Console.Write("Write your password: ");
-            var pass = Console.ReadLine();
+        static bool enabled = false;
+        public static bool Enabled {
+            get {
+                return enabled;
+            }
+            set {
+                enabled = value;
+            }
+        }
 
-            var dict = new Dictionary<string, string>();
-            dict.Add("login", user);
-            dict.Add("password", pass);
+        public static void Enable(string fileName) {
+            fileOutput = new FileStream(fileName, FileMode.Create);
+            logOutput = new StreamWriter(fileOutput, Console.OutputEncoding);
+            Console.SetOut(logOutput);
+            enabled = true;
+        }
+        public static void Disable() {
+            Console.OpenStandardOutput();
+            enabled = false;
+        }
+    }
 
-            var result = Web.SendRequest(@"http://faxity.us.to/api/login.php", FaxLib.Web.HttpRequestMethod.POST, dict);
+    class Program {     
+        // NetHost & Node Testing
+        static void Main(string[] args) {
+            var str = Console.ReadLine().ToLower();
 
-            Console.Write(result);
-            Console.ReadKey();
-        }*/
+            if (str == "server") {
+                var server = new NetHost(8888);
+                server.ClientConnecting += OnCon;
+                server.MessageReceived += OnMsg;
+                server.ClientDisconnecting += OnDis;
 
-        //Throttle
+                Console.WriteLine("Server Started\n");
+                while(true) {
+                    Console.Write("Server > ");
+                    var msg = Console.ReadLine();
+                    if (msg.ToLower() == "close")
+                        break;
+                    else
+                        server.Broadcast(msg);
+                }
+            }
+            else if (str == "client") {
+                var client = new NetNode();
+                client.Disconnecting += (sender, e) => Console.WriteLine("Disconnected from server");
+                client.MessageReceived += (sender, e) => Console.WriteLine("Server says: " + e.Message);
+                Console.WriteLine("Client Started!\n");
+                if (client.Connect("127.0.0.1", 8888)) {
+                    while (true) {
+                        Console.Write("Client > ");
+                        var msg = Console.ReadLine();
+                        if (msg.ToLower() == "loop") {
+                            while (true) {
+                                Console.WriteLine("Sending heartbeat.\n");
+                                client.SendMessage("Heartbeat");
+                                Thread.Sleep(2000);
+                            }
+                        }
+                        else if (msg.ToLower() == "close")
+                            break;
+                        else
+                            client.SendMessage(msg);
+                    }
+                }
+                else
+                    Console.WriteLine("Can't connect to server!");
+            }
+            else if (str == "ping") {
+                var ips = Net.FindIPs("192.168.1.", 100, 40);
+                foreach (var ip in ips)
+                    Console.WriteLine(ip + " Found");
+                Console.WriteLine("End");
+                Console.ReadLine();
+            }
+            else
+                Console.WriteLine("\nNOT SET!");
+            Console.WriteLine("\nShutting Down...");
+            Console.ReadLine();
+        }
+
+        static void OnDis(object sender, EventArgs e) {
+            var client = (NetClient)sender;
+            Console.WriteLine("Client " + client.Name + " Disconnected.");
+        }
+        static void OnMsg(object sender, NetMessageEvent e) {
+            var client = (NetClient)sender;
+            Console.WriteLine("\"" + e.Message + "\" count " + e.Message.Length + " from " + client.Name + ".");
+        }
+        static void OnCon(object sender, EventArgs e) {
+            var client = (NetClient)sender;
+            Console.WriteLine("Client with the ID " + client.Name + " Connected.");
+        }
+
+        /* Throttle
         static void Main() {
-            /*var time = DateTime.Now;
+            var time = DateTime.Now;
             var throttle = Throttle.DownloadToFile("http://localhost/file.mp4", "lel2.mp4", 100);
             throttle.ProgressUpdated += (sender, e) => {
                 Console.WriteLine(string.Format("{0:N2} % @ {1:N2} Kbps", e.Progress, e.BytesReceived / 1024d));
@@ -57,84 +122,6 @@ namespace Consoler {
             Thread.Sleep(2000);
             Console.WriteLine("ACCELERATING!");
             throttle.Speed = 300;
-            Console.ReadLine();*/
-        }
-
-        /*NetHost & Node Testing
-        static void Main(string[] args)
-        {
-            var str = Console.ReadLine();
-
-            if (str.ToLower() == "server") {
-                NetHost server = new NetHost(8888);
-                server.ClientConnecting += OnCon;
-                server.MessageReceived += OnMsg;
-                server.ClientDisconnecting += OnDis;
-
-                Console.WriteLine("Server Started\n");
-                Console.ReadLine();
-            }
-            else if (str.Contains(" ") && str.Split(' ')[0].ToLower() == "client") {
-                NetNode client = new NetNode();
-
-                if (client.Connect("127.0.0.1", 8888, str.Split(' ')[1]))
-                {
-                    Console.WriteLine("Client Started!\n");
-                    while (true)
-                    {
-                        Console.WriteLine("Sending Message.\n");
-                        client.SendMessage("Heartbeat");
-                        System.Threading.Thread.Sleep(2000);
-                    }
-                }
-                else Console.WriteLine("Can't connect to server!");
-            }
-            else if(str == "ping") {
-                var ips = Net.FindIPs("192.168.1.", 100, 40);
-                foreach(string ip in ips)
-                {
-                    Console.WriteLine(ip + " Found");
-                }
-                Console.ReadLine();
-            }
-            else Console.WriteLine("\nNOT SET!");
-            Console.WriteLine("\nShutting Down...");
-            Console.ReadLine();
-        }
-
-        static void OnDis(object sender, EventArgs e) {
-            var client = sender as NetClient;
-
-            Console.WriteLine("Client " + client.ID + " Disconnected.");
-        }
-        static void OnMsg(object sender, NetMessageEvent e) {
-            var client = sender as NetClient;
-            Console.WriteLine("\"" + e.Message + "\" count " + e.Message.Length + " from " + client.ID + ".");
-        }
-        static void OnCon(object sender, EventArgs e) {
-            var client = sender as NetClient;
-            Console.WriteLine("Client with the ID " + client.ID + " Connected.");
-        }*/
-
-        /*Network Scanner
-        static void Main(string[] args) {
-            Console.WriteLine("Searching for available clients in the network\n");
-            var ips = FaxLib.Net.Net.FindIPs("192.168.224.", 1000, 128);
-            Console.WriteLine("IP Adresses found in network:\n");
-            foreach (var ip in ips)
-                Console.WriteLine(ip);
-            Console.ReadLine();
-        }*/
-
-        /*Clipboard
-        [STAThread]
-        static void Main(string[] args) {
-            var arr = System.Windows.Forms.Clipboard.GetText().Split('\n');
-            //Formats the Enum
-            for (int i = 0; i < arr.Length; i++)
-                arr[i] = (arr[i].Substring(0, arr[i].IndexOf('=') - 1) + ",").Replace(" ", "");
-            System.Windows.Forms.Clipboard.SetText(string.Join("\n", arr));
-            Console.WriteLine("Done");
             Console.ReadLine();
         }*/
     }
