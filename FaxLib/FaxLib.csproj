@@ -66,7 +66,6 @@
     <Compile Include="Classes\COM.cs" />
     <Compile Include="Classes\Core.cs" />
     <Compile Include="Classes\Crypt.cs" />
-    <Compile Include="Classes\JSON.cs" />
     <Compile Include="Classes\ExtensionMethods.cs" />
     <Compile Include="Classes\Settings.cs" />
     <Compile Include="Classes\Web.cs" />
