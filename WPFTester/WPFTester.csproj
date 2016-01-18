@@ -96,6 +96,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FaxLib.WPF\FaxLib.WPF.csproj">
+      <Project>{5b646a3d-674d-44d6-9649-088a648dd3dd}</Project>
+      <Name>FaxLib.WPF</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FaxLib\FaxLib.csproj">
       <Project>{685d461b-a2fc-4340-887d-9ea922f53982}</Project>
       <Name>FaxLib</Name>

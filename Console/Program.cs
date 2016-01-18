@@ -2,6 +2,7 @@
 using FaxLib.Net;
 using System.Threading;
 using System.IO;
+using System.Collections;
 
 namespace Consoler {
     static class ConsoleLog {
@@ -9,7 +10,7 @@ namespace Consoler {
         static FileStream fileOutput;
 
         static bool enabled = false;
-        public static bool Enabled {
+        public static bool isEnabled {
             get {
                 return enabled;
             }
@@ -18,19 +19,33 @@ namespace Consoler {
             }
         }
 
-        public static void Enable(string fileName) {
-            fileOutput = new FileStream(fileName, FileMode.Create);
+        public static void Enable(string fileName, bool append) {
+            fileOutput = new FileStream(fileName, append ? FileMode.Append : FileMode.Create);
             logOutput = new StreamWriter(fileOutput, Console.OutputEncoding);
             Console.SetOut(logOutput);
             enabled = true;
         }
         public static void Disable() {
-            Console.OpenStandardOutput();
+            var sw = new StreamWriter(Console.OpenStandardOutput());
+            sw.AutoFlush = true;
+            Console.SetOut(sw);
             enabled = false;
         }
     }
+    
+    // Json parsing test
+    class Program {
+        static void Main() {
+            var json = "{version: \"1.0.0\", name: \"FSON - Faxity's JSON parser\", majorVersion: 100, }";
+            var parsed = FSON.Parse<Hashtable>(json);
+            
+            var stringify = FSON.Stringify(parsed);
 
-    class Program {     
+            Console.ReadLine();
+        }
+    }
+
+    /*class Program {     
         // NetHost & Node Testing
         static void Main(string[] args) {
             var str = Console.ReadLine().ToLower();
@@ -124,5 +139,5 @@ namespace Consoler {
             throttle.Speed = 300;
             Console.ReadLine();
         }*/
-    }
+    //}*/
 }

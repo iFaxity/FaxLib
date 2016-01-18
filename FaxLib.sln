@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFTester", "WPFTester\WPFT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console", "Console\Console.csproj", "{39949657-2B8C-4571-98C4-DF35FE9F57C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FaxLib.WPF", "FaxLibWPF\FaxLib.WPF.csproj", "{5B646A3D-674D-44D6-9649-088A648DD3DD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FaxLib.WPF", "FaxLib.WPF\FaxLib.WPF.csproj", "{5B646A3D-674D-44D6-9649-088A648DD3DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

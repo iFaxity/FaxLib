@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             FontSize="20" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="/FaxUI;component/#icomoon">
+             FontSize="20" VerticalAlignment="Top" HorizontalAlignment="Left" FontFamily="/FaxLib.WPF.Controls;component/#icomoon">
     <Grid>
         <Viewbox x:Name="viewbox">
             <TextBlock x:Name="text" TextWrapping="Wrap" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">

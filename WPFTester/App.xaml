@@ -6,7 +6,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/FaxUI;component/Window/UIWindow.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/FaxLib.WPF.Controls;component/Window/UIWindow.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

@@ -310,7 +310,7 @@ namespace FaxLib.Net {
     /// <summary>
     /// Class to connect to a <see cref="NetHost"/>
     /// </summary>
-    //[DebuggerStepThrough]
+    [DebuggerStepThrough]
     public class NetNode {
         #region Properties
         /// <summary>
@@ -364,14 +364,11 @@ namespace FaxLib.Net {
         /// <param name="hostname">Hostname or IPAddress to connect to</param>
         /// <param name="port">Host port to connect to</param>
         public bool Connect(string hostname, int port) {
-            for (int i = 0; i < Attempts; i++) {
-                try {
-                    Client = new TcpClient();
-                    Client.Connect(hostname, port);
-                    Task.Factory.StartNew(Listen);
-                    return Client.Connected;
-                }
-                catch { break; }
+            for (var i = 0; i < Attempts; i++) {
+                Client = new TcpClient();
+                Client.Connect(hostname, port);
+                Task.Factory.StartNew(Listen);
+                return Client.Connected;
             }
             return false;
         }

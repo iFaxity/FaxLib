@@ -7,9 +7,9 @@
             <fax:MaximizeVisibilityConverter x:Key="MaximizeVisibilityConverter"/>
             <fax:MinimizeVisibilityConverter x:Key="MinimizeVisibilityConverter"/>
             <!-- Default Button Images -->
-            <Image x:Key="RestoreImage" Stretch="Uniform" Source="/FaxUI;component/Resources/Restore.png"></Image>
-            <Image x:Key="MinimizeImage" Stretch="Uniform" Source="/FaxUI;component/Resources/Minimize.png"></Image>
-            <Image x:Key="MaximizeImage" Stretch="Uniform" Source="/FaxUI;component/Resources/Maximize.png"></Image>
+            <Image x:Key="RestoreImage" Stretch="Uniform" Source="/FaxLib.WPF.Controls;component/Resources/Restore.png"></Image>
+            <Image x:Key="MinimizeImage" Stretch="Uniform" Source="/FaxLib.WPF.Controls;component/Resources/Minimize.png"></Image>
+            <Image x:Key="MaximizeImage" Stretch="Uniform" Source="/FaxLib.WPF.Controls;component/Resources/Maximize.png"></Image>
             <!-- Default Brushes -->
             <SolidColorBrush x:Key="ButtonBackground" Color="#2D2D30"></SolidColorBrush>
             <SolidColorBrush x:Key="ButtonForeground" Color="#F1F1F1"></SolidColorBrush>
